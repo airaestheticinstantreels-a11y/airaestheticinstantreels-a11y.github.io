@@ -3,369 +3,429 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIR — Monthly Reels for Brands</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<title>AIR — Aesthetic Instant Reels</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #0a0a0a;
-    --white: #f5f0e8;
-    --cream: #ede8dc;
-    --accent: #c8f135;
-    --muted: #a0a08a;
-    --card: #141414;
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #050507;
+  color: #f0ebe0;
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 48px 20px 80px;
-    overflow-x: hidden;
-  }
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px 100px;
+  position: relative;
+  z-index: 1;
+}
 
-  /* Grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0.4;
-  }
+/* background glow only - no pointer blocking */
+.page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(100,80,20,0.06) 0%, transparent 60%),
+    #050507;
+  pointer-events: none;
+}
 
-  .container {
-    width: 100%;
-    max-width: 420px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
+.container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  /* Logo / Brand */
-  .brand {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 12px;
-    animation: fadeUp 0.6s ease both;
-  }
+/* Shutter */
+.shutter {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  pointer-events: none;
+}
+.shutter-left, .shutter-right {
+  flex: 1;
+  background: #000;
+  animation: shutterOpen 1.2s cubic-bezier(0.77,0,0.18,1) 0.2s forwards;
+}
+.shutter-left { transform-origin: left; }
+.shutter-right { transform-origin: right; }
+@keyframes shutterOpen {
+  0% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
 
-  .brand-logo {
-    width: 220px;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 0 24px rgba(200,170,80,0.3));
-  }
+/* Logo */
+.logo-wrap {
+  position: relative;
+  margin-bottom: 8px;
+  animation: fadeIn 0.8s ease 1.4s both;
+}
+.logo-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -30px;
+  background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: logoPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes logoPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+.logo-img {
+  width: 190px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 28px rgba(201,168,76,0.4));
+}
 
-  /* Stats bar */
-  .stats {
-    display: flex;
-    gap: 0;
-    width: 100%;
-    margin-bottom: 32px;
-    border: 1px solid #222;
-    border-radius: 12px;
-    overflow: hidden;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
+.tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  opacity: 0.8;
+  animation: fadeIn 0.8s ease 1.6s both;
+}
 
-  .stat {
-    flex: 1;
-    padding: 14px 10px;
-    text-align: center;
-    background: var(--card);
-    border-right: 1px solid #222;
-  }
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  animation: fadeIn 0.8s ease 1.7s both;
+}
+.divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.35), transparent);
+}
+.divider i {
+  font-style: normal;
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: rgba(201,168,76,0.5);
+  text-transform: uppercase;
+}
 
-  .stat:last-child { border-right: none; }
+/* Stats */
+.stats {
+  display: flex;
+  width: 100%;
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 2px;
+  margin-bottom: 32px;
+  animation: fadeIn 0.8s ease 1.8s both;
+}
+.stat {
+  flex: 1;
+  padding: 14px 8px;
+  text-align: center;
+  border-right: 1px solid rgba(201,168,76,0.1);
+}
+.stat:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 300;
+  color: #e8c97a;
+  letter-spacing: 1px;
+}
+.stat-label {
+  font-size: 7px;
+  color: #7a7060;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
 
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    color: var(--accent);
-    letter-spacing: 1px;
-  }
+/* Buttons & Links */
+.btn-main {
+  display: block;
+  width: 100%;
+  padding: 16px 24px;
+  border: 1px solid #c9a84c;
+  color: #e8c97a;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 16px;
+  background: transparent;
+  animation: fadeIn 0.8s ease 1.9s both;
+  -webkit-tap-highlight-color: rgba(201,168,76,0.15);
+}
 
-  .stat-label {
-    font-size: 9px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-top: 2px;
-  }
+.links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 36px;
+  animation: fadeIn 0.8s ease 2s both;
+}
 
-  /* CTA Buttons */
-  .cta-primary {
-    width: 100%;
-    padding: 18px 24px;
-    background: var(--accent);
-    color: var(--black);
-    border: none;
-    border-radius: 10px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 3px;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    display: block;
-    margin-bottom: 12px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    animation: fadeUp 0.6s 0.2s ease both;
-    box-shadow: 0 0 0 0 rgba(200,241,53,0);
-  }
+.link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border: 1px solid rgba(201,168,76,0.08);
+  border-left: 2px solid rgba(201,168,76,0.25);
+  text-decoration: none;
+  color: #f0ebe0;
+  background: rgba(10,8,6,0.5);
+  -webkit-tap-highlight-color: rgba(201,168,76,0.15);
+}
 
-  .cta-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(200,241,53,0.25);
-  }
+.link-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.link-icon {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(201,168,76,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.link-title {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+.link-sub {
+  font-size: 9px;
+  color: #7a7060;
+  margin-top: 2px;
+}
+.link-arrow {
+  color: rgba(201,168,76,0.4);
+  font-size: 16px;
+}
 
-  .cta-primary:active { transform: translateY(0); }
+/* Offer */
+.section-label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  animation: fadeIn 0.8s ease 2.1s both;
+}
+.section-label span {
+  flex: 1;
+  height: 1px;
+}
+.section-label span:first-child {
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3));
+}
+.section-label span:last-child {
+  background: linear-gradient(90deg, rgba(201,168,76,0.3), transparent);
+}
+.section-label p {
+  font-size: 7px;
+  letter-spacing: 4px;
+  color: rgba(201,168,76,0.5);
+  text-transform: uppercase;
+}
 
-  /* Link cards */
-  .link-card {
-    width: 100%;
-    padding: 16px 20px;
-    background: var(--card);
-    border: 1px solid #222;
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    transition: border-color 0.2s ease, transform 0.15s ease;
-    animation: fadeUp 0.6s ease both;
-  }
+.offer-card {
+  width: 100%;
+  border: 1px solid rgba(201,168,76,0.1);
+  padding: 22px 20px;
+  background: rgba(8,6,4,0.6);
+  position: relative;
+  animation: fadeIn 0.8s ease 2.2s both;
+}
+.offer-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+}
+.offer-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: #e8c97a;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.offer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.05);
+  font-size: 11px;
+  color: rgba(240,235,224,0.7);
+  font-weight: 300;
+  letter-spacing: 0.3px;
+}
+.offer-item:last-child { border-bottom: none; }
+.offer-dot {
+  width: 4px;
+  height: 4px;
+  background: #c9a84c;
+  flex-shrink: 0;
+  transform: rotate(45deg);
+}
 
-  .link-card:hover {
-    border-color: var(--accent);
-    transform: translateX(4px);
-  }
+.footer {
+  margin-top: 48px;
+  text-align: center;
+  animation: fadeIn 0.8s ease 2.3s both;
+}
+.footer p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 9px;
+  letter-spacing: 7px;
+  color: rgba(201,168,76,0.18);
+  text-transform: uppercase;
+}
 
-  .link-card:nth-child(1) { animation-delay: 0.3s; }
-  .link-card:nth-child(2) { animation-delay: 0.35s; }
-  .link-card:nth-child(3) { animation-delay: 0.4s; }
-  .link-card:nth-child(4) { animation-delay: 0.45s; }
-
-  .link-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .link-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    background: #1e1e1e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .link-title {
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-  }
-
-  .link-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .link-arrow {
-    color: var(--muted);
-    font-size: 18px;
-    transition: color 0.2s ease, transform 0.2s ease;
-  }
-
-  .link-card:hover .link-arrow {
-    color: var(--accent);
-    transform: translateX(3px);
-  }
-
-  /* Section divider */
-  .divider {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 20px 0 16px;
-    animation: fadeUp 0.6s 0.5s ease both;
-  }
-
-  .divider-line {
-    flex: 1;
-    height: 1px;
-    background: #222;
-  }
-
-  .divider-text {
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  /* What's included card */
-  .offer-card {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid #222;
-    border-radius: 12px;
-    padding: 22px 20px;
-    margin-bottom: 10px;
-    animation: fadeUp 0.6s 0.55s ease both;
-  }
-
-  .offer-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 3px;
-    color: var(--accent);
-    margin-bottom: 14px;
-  }
-
-  .offer-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 0;
-    border-bottom: 1px solid #1c1c1c;
-    font-size: 13px;
-    color: #ccc;
-    font-weight: 300;
-  }
-
-  .offer-item:last-child { border-bottom: none; }
-
-  .offer-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-  }
-
-  /* Footer */
-  .footer {
-    margin-top: 36px;
-    text-align: center;
-    animation: fadeUp 0.6s 0.7s ease both;
-  }
-
-  .footer-brand {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px;
-    letter-spacing: 5px;
-    color: #333;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- Brand Header -->
-  <div class="brand">
-    <img src="https://res.cloudinary.com/dkqmdg8rl/image/upload/q_auto/f_auto/v1780948742/file_00000000050071fa99f3e1a778f62842_jfkt6h.png" alt="AIR Logo" class="brand-logo" />
-  </div>
-
-  <!-- Stats -->
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num">30</div>
-      <div class="stat-label">Reels/Month</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">100%</div>
-      <div class="stat-label">Done For You</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">1</div>
-      <div class="stat-label">Slot Left</div>
-    </div>
-  </div>
-
-  <!-- Primary CTA -->
-  <a href="https://wa.me/918074897175?text=Hi%2C+I%27m+interested+in+AIR+Reels+package" class="cta-primary" target="_blank">
-    📲 &nbsp; Book Your Slot — WhatsApp
-  </a>
-
-  <!-- Links -->
-  <a href="https://wa.me/918074897175?text=Hi%2C+I%27m+interested+in+AIR+Reels+package" class="link-card" target="_blank">
-    <div class="link-left">
-      <div class="link-icon">💬</div>
-      <div>
-        <div class="link-title">Get a Free Sample Reel</div>
-        <div class="link-sub">We'll make one for your brand, free</div>
-      </div>
-    </div>
-    <span class="link-arrow">→</span>
-  </a>
-
-  <a href="https://www.instagram.com/air.reels" class="link-card" target="_blank">
-    <div class="link-left">
-      <div class="link-icon">🎬</div>
-      <div>
-        <div class="link-title">See Our Work</div>
-        <div class="link-sub">@air.reels on Instagram</div>
-      </div>
-    </div>
-    <span class="link-arrow">→</span>
-  </a>
-
-  <a href="https://wa.me/918074897175?text=Hi%2C+send+me+AIR+pricing+details" class="link-card" target="_blank">
-    <div class="link-left">
-      <div class="link-icon">📦</div>
-      <div>
-        <div class="link-title">View Packages & Pricing</div>
-        <div class="link-sub">Monthly plans for every business</div>
-      </div>
-    </div>
-    <span class="link-arrow">→</span>
-  </a>
-
-  <!-- Divider -->
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-text">What's Included</div>
-    <div class="divider-line"></div>
-  </div>
-
-  <!-- Offer Card -->
-  <div class="offer-card">
-    <div class="offer-title">30 Reels / Month Package</div>
-    <div class="offer-item"><div class="offer-dot"></div>Script writing for every reel</div>
-    <div class="offer-item"><div class="offer-dot"></div>On-location shooting at your business</div>
-    <div class="offer-item"><div class="offer-dot"></div>Professional editing with captions & music</div>
-    <div class="offer-item"><div class="offer-dot"></div>Trending audio & hooks every week</div>
-    <div class="offer-item"><div class="offer-dot"></div>Delivered ready to post, every month</div>
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <div class="footer-brand">AIR — AESTHETIC INSTANT REELS</div>
-  </div>
-
+<div class="shutter">
+  <div class="shutter-left"></div>
+  <div class="shutter-right"></div>
 </div>
+
+<div class="page">
+  <div class="container">
+
+    <div class="logo-wrap">
+      <img class="logo-img"
+        src="https://res.cloudinary.com/dkqmdg8rl/image/upload/q_auto/f_auto/v1780948742/file_00000000050071fa99f3e1a778f62842_jfkt6h.png"
+        alt="AIR Logo" />
+    </div>
+
+    <p class="tagline">We Turn Moments Into Cinematic Stories</p>
+
+    <div class="divider">
+      <span></span>
+      <i>Est. 2025</i>
+      <span></span>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">30</div>
+        <div class="stat-label">Reels / Mo</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Done For You</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">Few</div>
+        <div class="stat-label">Slots Left</div>
+      </div>
+    </div>
+
+    <a class="btn-main" href="https://wa.me/918074897175?text=Hi%2C+I%27m+interested+in+AIR+Reels+package">
+      ✦ &nbsp; Book Your Slot &nbsp; ✦
+    </a>
+
+    <div class="links">
+      <a class="link-item" href="https://wa.me/918074897175?text=Hi%2C+I+want+to+connect+with+AIR">
+        <div class="link-left">
+          <div class="link-icon">💬</div>
+          <div>
+            <div class="link-title">WhatsApp Us Now</div>
+            <div class="link-sub">Get a reply within minutes</div>
+          </div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-item" href="https://wa.me/918074897175?text=Hi%2C+send+me+a+free+sample+reel">
+        <div class="link-left">
+          <div class="link-icon">🎬</div>
+          <div>
+            <div class="link-title">Get a Free Sample Reel</div>
+            <div class="link-sub">We'll craft one for your brand — free</div>
+          </div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-item" href="https://www.instagram.com/reelswithair?igsh=MWg0OXB2ZXQ0eWRlZQ==">
+        <div class="link-left">
+          <div class="link-icon">✦</div>
+          <div>
+            <div class="link-title">See Our Work</div>
+            <div class="link-sub">@reelswithair on Instagram</div>
+          </div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-item" href="https://wa.me/918074897175?text=Hi%2C+send+me+AIR+pricing+details">
+        <div class="link-left">
+          <div class="link-icon">◈</div>
+          <div>
+            <div class="link-title">View Packages & Pricing</div>
+            <div class="link-sub">Monthly plans for every business</div>
+          </div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+
+    <div class="section-label">
+      <span></span>
+      <p>What's Included</p>
+      <span></span>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-title">30 Reels / Month</div>
+      <div class="offer-item"><div class="offer-dot"></div>Script writing for every reel</div>
+      <div class="offer-item"><div class="offer-dot"></div>On-location shooting at your business</div>
+      <div class="offer-item"><div class="offer-dot"></div>Professional editing with captions & music</div>
+      <div class="offer-item"><div class="offer-dot"></div>Trending audio & hooks every week</div>
+      <div class="offer-item"><div class="offer-dot"></div>Delivered ready to post, every month</div>
+    </div>
+
+    <div class="footer">
+      <p>AIR — Aesthetic Instant Reels</p>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>
